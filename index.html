@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>hehehehawr</title>
+    <style>
+        #display {
+            font-family: 'Courier New', Courier, monospace;
+            font-variant-numeric: tabular-nums; 
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            cursor: pointer;
+            padding: 8px 16px;
+        }
+
+        kbd {
+            background-color: #eee;
+            border-radius: 3px;
+            border: 1px solid #b4b4b4;
+            box-shadow: 0 1px 1px rgba(0,0,0,.2);
+            color: #333;
+            display: inline-block;
+            font-size: .85em;
+            font-weight: 700;
+            line-height: 1;
+            padding: 2px 4px;
+            white-space: nowrap;
+       }
+    </style>
+</head>
+<body>
+
+    <div id="display">damian was here</div>
+
+    <div class="controls">
+        <button id="startBtn">shart</button>
+        <button id="stopBtn">STAWPPPP~</button>
+        <button id="resetBtn">gebackadam</button>
+    </div>
+    <p>Press <kbd>boo</kbd> + <kbd>AAAAAAAAAAAAAAAAAAAAAAA EAEAEAEAE</kbd> to goon</p>
+
+    <script>
+        let startTime = 0;
+        let accumulatedTime = 0;
+        let isRunning = false;
+        let frameId = null;
+
+        const display = document.getElementById('display');
+
+        function formatTime(totalMs) {
+            const totalSeconds = totalMs / 1000;
+            const mins = Math.floor(totalSeconds / 60);
+            const secs = totalSeconds % 60;
+
+            const mm = mins.toString().padStart(2, '0');
+            // Pad seconds to 2 digits before decimal, 4 after
+            // Total length: 2 (ss) + 1 (.) + 4 (ms) = 7
+            const ss = secs.toFixed(4).padStart(7, '0');
+
+            return `${mm}:${ss}`;
+        }
+
+        function update() {
+            if (!isRunning) return;
+
+            const now = performance.now();
+            const elapsed = now - startTime + accumulatedTime;
+            display.textContent = formatTime(elapsed);
+
+            frameId = requestAnimationFrame(update);
+        }
+
+        const start = () => {
+            if (!isRunning) {
+                isRunning = true;
+                startTime = performance.now();
+                update();
+            }
+        };
+
+        const stop = () => {
+            if (isRunning) {
+                isRunning = false;
+                cancelAnimationFrame(frameId);
+                accumulatedTime += (performance.now() - startTime);
+            }
+        };
+
+        const reset = () => {
+            isRunning = false;
+            cancelAnimationFrame(frameId);
+            startTime = 0;
+            accumulatedTime = 0;
+            display.textContent = "bro resharted the timer";
+        };
+
+        // Button Listeners
+        document.getElementById('startBtn').onclick = start;
+        document.getElementById('stopBtn').onclick = stop;
+        document.getElementById('resetBtn').onclick = reset;
+
+        // Spacebar Listener
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault(); // Prevent page scrolling
+                if (isRunning) {
+                    stop();
+                } else {
+                    start();
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
